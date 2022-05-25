@@ -70,7 +70,7 @@ def setup(bot,storage):
                         band = ""
                     try:
                         if "noping" in text:
-                            returns.append("{}: {}，水了 {} 次".format(numbers[place],user,y))
+                            returns.append("{}: {}{}，水了 {} 次".format(numbers[place],user,band,y))
                         else:
                             returns.append("{}: [{}](tg://user?id={}){}，水了 {} 次".format(numbers[place],user,x,band,y))
                     except IndexError:
