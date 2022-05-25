@@ -62,20 +62,22 @@ def setup(bot,storage):
                 place = 0
                 for x,y in waters_sorted:
                     try:
-                        usero = await bot.get_entity(int(x))
-                        user = utils.get_display_name(usero)
-                    except ValueError:
-                        user = x
-                    band = get_bandage(y,short=True)
-                    if band == None:
-                        band = ""
-                    try:
-                        if "noping" in text:
-                            returns.append("{}: {}{}，水了 {} 次".format(numbers[place],user,band,y))
-                        else:
-                            returns.append("{}: [{}](tg://user?id={}){}，水了 {} 次".format(numbers[place],user,x,band,y))
+                        place_txt = numbers[place]
                     except IndexError:
                         pass
+                    else:
+                        try:
+                            usero = await bot.get_entity(int(x))
+                            user = utils.get_display_name(usero)
+                        except ValueError:
+                            user = x
+                        band = get_bandage(y,short=True)
+                        if band == None:
+                            band = ""
+                        if "noping" in text:
+                            returns.append("{}: {}{}，水了 {} 次".format(place_txt,user,band,y))
+                        else:
+                            returns.append("{}: [{}](tg://user?id={}){}，水了 {} 次".format(place_txt,user,x,band,y))
                     all_waters += y
                     place += 1
                 returns.append("{} 位群員參與了水群。".format(len(waters)))
