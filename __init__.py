@@ -41,7 +41,7 @@ def setup(bot,storage):
             if len(waters) == 0:
                 returns.append("無資料。")
             else:
-                waters_sorted = (sorted(waters.items(), key = lambda x: int(x[1])三 * -1))
+                waters_sorted = (sorted(waters.items(), key = lambda x: int(x[1]) * -1))
                 place = 0
                 for x,y in waters_sorted:
                     try:
