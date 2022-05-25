@@ -79,7 +79,7 @@ def setup(bot,storage):
                     all_waters += y
                     place += 1
                 returns.append("{} 位群員參與了水群。".format(len(waters)))
-                returns.append("本群含水量爲 {}，平均每位有參與水群的羣員水了 {} 次。".format(all_waters,round(float(all_waters)/float(len(waters)),1))法
+                returns.append("本群含水量爲 {}，平均每位有參與水群的羣員水了 {} 次。".format(all_waters,round(float(all_waters)/float(len(waters)),1)))
             returns.append("運行指令 /waterboard 獲取最新水群資訊！")
             returns.append("運行指令 /selfwater 獲取自己的水群資訊！")
             returns.append("運行指令 /water [提及或用戶ID] 獲取他人的水群資訊（也可回覆別人省略參數）！")
