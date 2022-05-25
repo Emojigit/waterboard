@@ -38,21 +38,21 @@ def setup(bot,storage):
         waters = storage.get(storage_key,{})
         if len(waters) == 0:
             returns.append("無資料。")
-            await event.respond("\n".join(returns))
-            raise events.StopPropagation
-        waters_sorted = (sorted(waters.items(), key = lambda x: x[1] * -1))
-        place = 0
-        for x,y in waters_sorted:
-            try:
-                usero = await bot.get_entity(int(x))
-                user = utils.get_display_name(usero)
-            except ValueError:
-                user = x
-            try:
-                returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
-            except IndexError:
-                break
-            place += 1
+        else:
+            waters_sorted = (sorted(waters.items(), key = lambda x: x[1] * -1))
+            place = 0
+            for x,y in waters_sorted:
+                try:
+                    usero = await bot.get_entity(int(x))
+                    user = utils.get_display_name(usero)
+                except ValueError:
+                    user = x
+                try:
+                    returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
+                except IndexError:
+                    break
+                place += 1
+        returns.append("運行指令 /waterboard 獲取最新水群資訊！")
         await event.respond("\n".join(returns))
         raise events.StopPropagation
 
