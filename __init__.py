@@ -55,7 +55,7 @@ def setup(bot,storage):
                         break
                     place += 1
             returns.append("運行指令 /waterboard 獲取最新水群資訊！")
-            await event.respond("\n".join(returns))
+            await event.respond("\n".join(returns),silent=True)
         raise events.StopPropagation
 
 
