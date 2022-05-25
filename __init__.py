@@ -30,31 +30,32 @@ def setup(bot,storage):
         if event.is_private:
             await event.respond("此指令只在群組有效。")
             raise events.StopPropagation
-        returns = []
-        returns.append("水群龍虎榜：")
-        chatid = event.chat_id
-        text = event.message.text
-        sender = event.sender
-        storage_key = "waters_{}".format(chatid)
-        waters = storage.get(storage_key,{})
-        if len(waters) == 0:
-            returns.append("無資料。")
-        else:
-            waters_sorted = (sorted(waters.items(), key = lambda x: int(x[1]) * -1))
-            place = 0
-            for x,y in waters_sorted:
-                try:
-                    usero = await bot.get_entity(int(x))
-                    user = utils.get_display_name(usero)
-                except ValueError:
-                    user = x
-                try:
-                    returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
-                except IndexError:
-                    break
-                place += 1
-        returns.append("運行指令 /waterboard 獲取最新水群資訊！")
-        await event.respond("\n".join(returns))
+        async with bot.action(event.chat, 'typing') as action:
+            returns = []
+            returns.append("水群龍虎榜：")
+            chatid = event.chat_id
+            text = event.message.text
+            sender = event.sender
+            storage_key = "waters_{}".format(chatid)
+            waters = storage.get(storage_key,{})
+            if len(waters) == 0:
+                returns.append("無資料。")
+            else:
+                waters_sorted = (sorted(waters.items(), key = lambda x: int(x[1])三 * -1))
+                place = 0
+                for x,y in waters_sorted:
+                    try:
+                        usero = await bot.get_entity(int(x))
+                        user = utils.get_display_name(usero)
+                    except ValueError:
+                        user = x
+                    try:
+                        returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
+                    except IndexError:
+                        break
+                    place += 1
+            returns.append("運行指令 /waterboard 獲取最新水群資訊！")
+            await event.respond("\n".join(returns))
         raise events.StopPropagation
 
 
