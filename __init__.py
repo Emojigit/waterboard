@@ -58,6 +58,7 @@ def setup(bot,storage):
                 returns.append("無資料。")
             else:
                 waters_sorted = sorted(waters.items(), key = lambda x: int(x[1]) * -1)
+                all_waters = 0
                 place = 0
                 for x,y in waters_sorted:
                     try:
@@ -74,12 +75,15 @@ def setup(bot,storage):
                         else:
                             returns.append("{}: [{}](tg://user?id={}){}，水了 {} 次".format(numbers[place],user,x,band,y))
                     except IndexError:
-                        break
+                        pass
+                    all_waters += y
                     place += 1
+                returns.append("{} 位群員參與了水群。".format(len(waters)))
+                returns.append("本群含水量爲 {}，平均每位有參與水群的羣員水了 {} 次。".format(all_waters,round(float(all_waters)/float(len(waters)),1))法
             returns.append("運行指令 /waterboard 獲取最新水群資訊！")
             returns.append("運行指令 /selfwater 獲取自己的水群資訊！")
             returns.append("運行指令 /water [提及或用戶ID] 獲取他人的水群資訊（也可回覆別人省略參數）！")
-            await event.respond("\n".join(returns),silent=True)
+        await event.respond("\n".join(returns),silent=True)
         raise events.StopPropagation
     @bot.on(events.NewMessage(pattern="/selfwater"))
     async def selfwater(event):
