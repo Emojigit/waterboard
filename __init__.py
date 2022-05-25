@@ -52,6 +52,7 @@ def setup(bot,storage):
                 returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
             except IndexError:
                 break
+            place += 1
         await event.respond("\n".join(returns))
         raise events.StopPropagation
 
