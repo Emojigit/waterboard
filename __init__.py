@@ -17,11 +17,12 @@ def setup(bot,storage):
         chatid = event.chat_id
         text = event.message.text
         sender = event.sender
+        sender_id = str(sender.id)
         storage_key = "waters_{}".format(chatid)
         if text[0] == "/":
             return # Ignore commands
         waters = storage.get(storage_key,{})
-        waters[sender.id] = (waters[sender.id] if sender.id in waters else 0) + 1
+        waters[sender_id] = (waters[sender_id] if sender_id in waters else 0) + 1
         storage.set(storage_key,waters)
     # sorted(a.items(), key=lambda x: int(x[1]))
     @bot.on(events.NewMessage(pattern="/waterboard"))
@@ -39,7 +40,7 @@ def setup(bot,storage):
         if len(waters) == 0:
             returns.append("無資料。")
         else:
-            waters_sorted = (sorted(waters.items(), key = lambda x: x[1] * -1))
+            waters_sorted = (sorted(waters.items(), key = lambda x: int(x[1]) * -1))
             place = 0
             for x,y in waters_sorted:
                 try:
