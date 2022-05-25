@@ -28,6 +28,7 @@ def setup(bot,storage):
     async def waterboard(event):
         if event.is_private:
             await event.respond("此指令只在群組有效。")
+            raise events.StopPropagation
         returns = []
         returns.append("水群龍虎榜：")
         chatid = event.chat_id
