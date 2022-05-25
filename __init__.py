@@ -50,7 +50,10 @@ def setup(bot,storage):
                     except ValueError:
                         user = x
                     try:
-                        returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
+                        if "noping" in text:
+                            returns.append("{}: {}，水了 {} 次".format(numbers[place],user,y))
+                        else:
+                            returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
                     except IndexError:
                         break
                     place += 1
