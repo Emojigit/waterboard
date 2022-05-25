@@ -9,6 +9,22 @@ __dname__ = "waterboard"
 from telethon import events, utils
 from asyncio import sleep
 from time import time
+bandages_ = {
+    15:  ("💧","水滴"),
+    30:  ("💦","潑水"),
+    50:  ("🚿","花灑"),
+    75:  ("🌧","雨水"),
+    120: ("🌊","海嘯"),
+}
+bandages = {x:bandages_[x] for x in reversed(bandages_)}
+def get_bandage(waters,short=False):
+    for x in bandages.keys():
+        if waters >= x:
+            y = bandages[x]
+            if short:
+                return y[0]
+            return y[0] + y[1]
+    return None
 numbers = ["🥇 1st","🥈 2nd","🥉 3rd","🏅 4th"] + [str(x) + "th" for x in range(5,10)]
 def setup(bot,storage):
     @bot.on(events.NewMessage())
@@ -49,11 +65,14 @@ def setup(bot,storage):
                         user = utils.get_display_name(usero)
                     except ValueError:
                         user = x
+                    band = get_bandage(y,short=True)
+                    if band == None:
+                        band = ""
                     try:
                         if "noping" in text:
                             returns.append("{}: {}，水了 {} 次".format(numbers[place],user,y))
                         else:
-                            returns.append("{}: [{}](tg://user?id={})，水了 {} 次".format(numbers[place],user,x,y))
+                            returns.append("{}: [{}](tg://user?id={}){}，水了 {} 次".format(numbers[place],user,x,band,y))
                     except IndexError:
                         break
                     place += 1
@@ -75,7 +94,12 @@ def setup(bot,storage):
             waters_sorted = sorted(waters.items(), key = lambda x: int(x[1]) * -1)
             for n in range(0,len(waters_sorted)):
                 if int(waters_sorted[n][0]) == sender.id:
-                    await event.respond("[你](tg://user?id={})水了 {} 條信息，群內第 {} 名。".format(sender.id,waters_sorted[n][1],n + 1))
+                    band = get_bandage(waters_sorted[n][1],short=False)
+                    if band == None:
+                        band = "無勳章"
+                    else:
+                        band = "勳章爲" + band
+                    await event.respond("[你](tg://user?id={})水了 {} 條信息，群內第 {} 名，{}。".format(sender.id,waters_sorted[n][1],n + 1,band))
                     raise events.StopPropagation
             await event.respond("[你](tg://user?id={})沒有水過任何信息。".format(sender.id))
             raise events.StopPropagation
