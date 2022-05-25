@@ -40,7 +40,7 @@ def setup(bot,storage):
             returns.append("無資料。")
             await event.respond("\n".join(returns))
             raise events.StopPropagation
-        waters_sorted = sorted(waters.items(), key = lambda x: x[1])
+        waters_sorted = (sorted(waters.items(), key = lambda x: x[1] * -1)
         place = 0
         for x,y in waters_sorted:
             try:
