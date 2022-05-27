@@ -47,6 +47,7 @@ def setup(bot,storage):
             await event.respond("此指令只在群組有效。")
             raise events.StopPropagation
         async with bot.action(event.chat, 'typing') as action:
+            msg = await event.respond("正在生成水群龍虎榜……")
             returns = []
             returns.append("水群龍虎榜：")
             chatid = event.chat_id
@@ -85,7 +86,7 @@ def setup(bot,storage):
             returns.append("運行指令 /waterboard 獲取最新水群資訊！")
             returns.append("運行指令 /selfwater 獲取自己的水群資訊！")
             returns.append("運行指令 /water [提及或用戶ID] 獲取他人的水群資訊（也可回覆別人省略參數）！")
-        await event.respond("\n".join(returns),silent=True)
+            await msg.edit("\n".join(returns))
         raise events.StopPropagation
     @bot.on(events.NewMessage(pattern="/selfwater"))
     async def selfwater(event):
