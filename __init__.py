@@ -9,6 +9,7 @@ __dname__ = "waterboard"
 from telethon import events, utils
 from asyncio import sleep
 from time import time
+import config, random, string
 bandages_ = {
     15:  ("💧","水滴"),
     30:  ("💦","潑水"),
@@ -26,6 +27,8 @@ def get_bandage(waters,short=False):
             return y[0] + y[1]
     return None
 numbers = ["🥇 1st","🥈 2nd","🥉 3rd","🏅 4th"] + [str(x) + "th" for x in range(5,10)]
+def randomstr(length):
+    return "".join(random.choice(string.ascii_letters) for i in range(length))
 def setup(bot,storage):
     @bot.on(events.NewMessage())
     async def waterboard_count(event):
@@ -44,10 +47,10 @@ def setup(bot,storage):
     @bot.on(events.NewMessage(pattern="/waterboard"))
     async def waterboard(event):
         if event.is_private:
-            await event.respond("此指令只在群組有效。")
+            await event.respond("❌ 此指令只在群組有效。")
             raise events.StopPropagation
         async with bot.action(event.chat, 'typing') as action:
-            msg = await event.respond("正在生成水群龍虎榜……")
+            #msg = await event.respond("⚙️ 正在生成水群龍虎榜……")
             returns = []
             returns.append("水群龍虎榜：")
             chatid = event.chat_id
@@ -86,12 +89,12 @@ def setup(bot,storage):
             returns.append("運行指令 /waterboard 獲取最新水群資訊！")
             returns.append("運行指令 /selfwater 獲取自己的水群資訊！")
             returns.append("運行指令 /water [提及或用戶ID] 獲取他人的水群資訊（也可回覆別人省略參數）！")
-            await msg.edit("\n".join(returns))
+            await event.respond("\n".join(returns))
         raise events.StopPropagation
     @bot.on(events.NewMessage(pattern="/selfwater"))
     async def selfwater(event):
         if event.is_private:
-            await event.respond("此指令只在群組有效。")
+            await event.respond("❌ 此指令只在群組有效。")
             raise events.StopPropagation
         async with bot.action(event.chat, 'typing') as action:
             chatid = event.chat_id
@@ -114,7 +117,7 @@ def setup(bot,storage):
     @bot.on(events.NewMessage(pattern="/water"))
     async def water(event):
         if event.is_private:
-            await event.respond("此指令只在群組有效。")
+            await event.respond("❌ 此指令只在群組有效。")
             raise events.StopPropagation
         async with bot.action(event.chat, 'typing') as action:
             chatid = event.chat_id
@@ -133,14 +136,14 @@ def setup(bot,storage):
                 try:
                     target = await bot.get_input_entity(text)
                 except (ValueError,TypeError):
-                    await event.respond("找不到用戶。格式：/water [提及或用戶ID，也可回覆代替]")
+                    await event.respond("❌ 找不到用戶。格式：/water [提及或用戶ID，也可回覆代替]")
                     raise events.StopPropagation
             else:
                 rep = await event.get_reply_message()
                 if rep != None:
                     target = rep.sender
                 else:
-                    await event.respond("找不到用戶。格式：/water [提及或用戶ID，也可回覆代替]")
+                    await event.respond("❌ 找不到用戶。格式：/water [提及或用戶ID，也可回覆代替]")
                     raise events.StopPropagation
             storage_key = "waters_{}".format(chatid)
             waters = storage.get(storage_key,{})
@@ -160,6 +163,31 @@ def setup(bot,storage):
                     raise events.StopPropagation
             await event.respond("[他](tg://user?id={})沒有水過任何信息。".format(id))
             raise events.StopPropagation
+    @bot.on(events.NewMessage(pattern="/wreset"))
+    async def reset(event):
+        async with bot.action(event.chat, 'typing') as action:
+            sender = event.sender
+            if config.owner != sender.id:
+                permissions = await bot.get_permissions(event.chat, sender)
+                if not permissions.is_admin:
+                    await event.respond("❌ 只有機器人擁有者以及管理員有權重設水群龍虎榜。")
+                    raise events.StopPropagation
+            try:
+                ccode = event.text.split(" ",1)[1]
+                if ccode != storage.get("confirm_clear_code_" + str(event.chat_id),0):
+                    raise IndexError
+                msg = await event.respond("⚙️ 正在重設水群龍虎榜……")
+                storage.set("confirm_clear_code_" + str(event.chat_id),0)
+                storage_key = "waters_{}".format(event.chat_id)
+                storage.set(storage_key,{})
+                await msg.edit("✅ 水群龍虎榜重設完成。")
+            except IndexError:
+                rstr = randomstr(10)
+                storage.set("confirm_clear_code_" + str(event.chat_id),rstr)
+                await event.respond("⚠️ 確定重設水群龍虎榜？此操作不可逆！\n如果確認執行，請回覆： `/wreset {}`".format(rstr))
+            finally:
+                raise events.StopPropagation
+
 
 
 # 🥇🥈🥉🏅
